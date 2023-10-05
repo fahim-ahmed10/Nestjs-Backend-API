@@ -1,15 +1,34 @@
-import { Controller, Get } from "@nestjs/common"
-
-@Controller('report/income')
+import { Controller, Get, Post, Put, Delete, Param } from "@nestjs/common"
+import { ReportType, data } from "src/data";
+@Controller('report/:type')
 export class AppController {
   @Get()
-  getAllImcomeReports(){
-    return[];
+  getAllReports(@Param('type') type: string){
+    const reportType = type === "income" ? ReportType.INCOME : ReportType.EXPENSE;
+    return data.report.filter((report) => report.type == reportType);
   }
 
-  @Get()
-  getAllImcomeReports2(){
-    return{};
+  @Get(':id')
+  getReportById(@Param('type') type: string,@Param('id') id: string){
+    const reportType = type === "income" ? ReportType.INCOME : ReportType.EXPENSE;
+    return data.report
+    .filter((report) => report.type === reportType)
+    .find((report) => report.id === id );
+  }
+
+  @Post()
+  createReport(){
+    return 'created';
+  }
+
+  @Put(':id')
+  updateReport(){
+    return 'update';
+  }
+
+  @Delete(':id')
+  deleteReport(){
+    return 'delete';
   }
 
 }
@@ -18,6 +37,8 @@ export class AppController {
 //http://localhost:3000/
 
 //http://localhost:3000/report/income
+//http://localhost:3000/report/expense
+//http://localhost:3000/report/expense/sdfsd
+//http://localhost:3000/report/income/idafasdfasd
 
-//http://localhost:3000/hello
-//http://localhost:3000/hi/hello
+
