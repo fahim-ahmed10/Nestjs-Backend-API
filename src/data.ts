@@ -1,5 +1,5 @@
 
-export enum ReportType{
+export enum ReportType {
     INCOME = "income",
     EXPENSE = "expense",
 }
@@ -16,7 +16,7 @@ export const data: Data = {
         {
             id: "uuid2",
             source: "Youtube",
-            amount: 2500,
+            amount: 5000,
             created_at: new Date(),
             updated_at: new Date(),
             type: ReportType.INCOME
@@ -32,14 +32,14 @@ export const data: Data = {
     ],
 };
 
-interface Data{
+interface Data {
     report: {
         id: string,
         source: string,
         amount: number,
         created_at: Date,
         updated_at: Date,
-        type: ReportType 
+        type: ReportType
 
     }[]
 }
