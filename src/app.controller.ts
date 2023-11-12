@@ -1,7 +1,9 @@
-import { Controller, Get, Post, Put, Delete, Param, Body, HttpCode, ParseUUIDPipe, ParseEnumPipe } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Param, Body, HttpCode, ParseUUIDPipe, ParseEnumPipe,UploadedFile, UseInterceptors, Res } from '@nestjs/common';
 import { ReportType } from 'src/data';
 import { AppService } from "./app.service";
-import {CreateReportDto, UpdateReportDto} from "./dtos/report.dto"
+import { CreateReportDto, UpdateReportDto } from "./dtos/report.dto"
+import { FileInterceptor } from '@nestjs/platform-express';
+import { MulterError, diskStorage } from 'multer';
 
 
 @Controller('report/:type')
@@ -50,6 +52,33 @@ export class AppController {
 
   }
 
+
+  @Post('upload')
+  @UseInterceptors(FileInterceptor('file',
+    {
+      fileFilter: (req, file, cb) => {
+        if (file.originalname.match(/^.*\.(jpg|webp|png|jpeg)$/))
+          cb(null, true);
+        else {
+          cb(new MulterError('LIMIT_UNEXPECTED_FILE', 'image'), false);
+        }
+      },
+      limits: { fileSize: 3000000 },
+      storage: diskStorage({
+        destination: './uploads',
+        filename: function (req, file, cb) {
+          cb(null, Date.now() + file.originalname)
+        },
+      })
+    }))
+  uploadFile(@UploadedFile() file: Express.Multer.File) {
+    console.log(file);
+  }
+
+  @Get('/getimage/:name')
+  getImages(@Param('name') name, @Res() res) {
+    res.sendFile(name, { root: './uploads' })
+  }
 }
 
 
